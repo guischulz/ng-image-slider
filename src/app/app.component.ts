@@ -1,6 +1,6 @@
-import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
-import { NgImageSliderModule, NgImageSliderComponent } from 'ng-image-slider';
-import { HeroService } from "./hero.service";
+import { AfterViewInit, Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { NgImageSliderComponent } from 'ng-image-slider';
+import { HeroService, Image } from "./hero.service";
 
 @Component({
     selector: 'app-root',
@@ -8,10 +8,9 @@ import { HeroService } from "./hero.service";
     styleUrls: ['./app.component.css'],
     encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
-    @ViewChild('nav', {static: false}) ds: NgImageSliderComponent;
+export class AppComponent implements AfterViewInit {
+    @ViewChild('nav') ds: NgImageSliderComponent;
     title = 'Ng Image Slider';
-    showSlider = true;
 
     sliderWidth: Number = 940;
     sliderImageWidth: Number = 250;
@@ -22,31 +21,55 @@ export class AppComponent {
     sliderAutoSlide: Boolean = false;
     sliderSlideImage: Number = 1;
     sliderAnimationSpeed: any = 1;
-    imageObject;
+    imageObject: Image[];
     slideOrderType:string = 'DESC';
 
     constructor(private heroService: HeroService) {
         this.setImageObject();
     }
 
+    ngAfterViewInit(): void {
+        this.setImageSize();
+    }
+
+    private setImageSize() {
+        this.ds.imageSize = {
+            'width'  : this.sliderImageWidth,
+            'height' : this.sliderImageHeight
+        }
+        this.ds.setSliderWidth();
+    }
+
     onChangeHandler() {
         this.setImageObject();
-        this.showSlider = false;
-        setTimeout(() => {
-            this.showSlider = true;
-        }, 10);
+    }
+    
+    onChangeImageSize() {
+        this.setImageSize();
+    }
+
+    onChangeInfinite() {
+        if (!this.sliderInfinite && this.sliderAutoSlide) {
+            this.sliderAutoSlide = false;
+            this.ds.imageMouseEnterHandler()
+        }
+    }
+
+    onChangeAutoSlide() {
+        if (this.sliderAutoSlide) {
+            setTimeout(() => {
+                this.ds.imageAutoSlide();
+            });
+        } else {
+            this.ds.imageMouseEnterHandler()
+        }
     }
 
     setImageObject() {
-        // this.heroService.getImages().subscribe((data: any) => {
-        // setTimeout(() => {
-        //     this.imageObject = data;
-        // }, 3000);
-        // });
         this.imageObject = this.heroService.getImagesWithOrder();
     }
 
-    imageOnClick(index) {
+    imageOnClick(index: number) {
         console.log('index', index);
     }
 
@@ -54,11 +77,11 @@ export class AppComponent {
         console.log('lightbox close')
     }
 
-    arrowOnClick(event) {
+    arrowOnClick(event: Event) {
         console.log('arrow click event', event);
     }
 
-    lightboxArrowClick(event) {
+    lightboxArrowClick(event: Event) {
         console.log('popup arrow click', event);
     }
 

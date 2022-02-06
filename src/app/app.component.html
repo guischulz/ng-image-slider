@@ -3,7 +3,7 @@
     <h1 class="text-center demo-title-main">
         Welcome to {{ title }}!
     </h1>
-    <div class="margin-auto demo-div box-shadow" [ngStyle]="{'width':'100%'}">
+    <div class="margin-auto demo-div box-shadow" [ngStyle]="{'width': sliderWidth + 'px'}">
         <ng-image-slider #nav
             [images]="imageObject"
             [infinite]="sliderInfinite"
@@ -39,7 +39,7 @@
             </td>
             <td>
                 <span class="input-icon input-icon-right">
-                    <input type="number" [value]="sliderWidth" [(ngModel)]="sliderWidth" (change)="onChangeHandler()" />
+                    <input type="number" [(ngModel)]="sliderWidth"/>
                     <i>px</i>
                 </span>
             </td>
@@ -53,14 +53,14 @@
                 <div class="size-div">
                     <span class="input-title">Width</span>
                     <span class="input-icon input-icon-right">
-                        <input type="number" [value]="sliderImageWidth" [(ngModel)]="sliderImageWidth" />
+                        <input type="number" [(ngModel)]="sliderImageWidth" (ngModelChange)="onChangeImageSize()"/>
                         <i>px</i>
                     </span>
                 </div>
                 <div class="size-div">
                     <span class="input-title">Height</span>
                     <span class="input-icon input-icon-right">
-                        <input type="number" [value]="sliderImageHeight" [(ngModel)]="sliderImageHeight" />
+                        <input type="number" [(ngModel)]="sliderImageHeight" (ngModelChange)="onChangeImageSize()"/>
                         <i>px</i>
                     </span>
                 </div>
@@ -73,7 +73,7 @@
             </td>
             <td>
                 <label class="switch">
-                    <input type="checkbox" checked [(ngModel)]="sliderArrowShow">
+                    <input type="checkbox" [(ngModel)]="sliderArrowShow">
                     <span class="slider round"></span>
                 </label>
             </td>
@@ -84,7 +84,7 @@
             </td>
             <td>
                 <label class="switch">
-                    <input type="checkbox" (change)="onChangeHandler()" checked [(ngModel)]="sliderInfinite">
+                    <input type="checkbox" [(ngModel)]="sliderInfinite" (ngModelChange)="onChangeInfinite()">
                     <span class="slider round"></span>
                 </label>
             </td>
@@ -95,7 +95,7 @@
             </td>
             <td>
                 <label class="switch">
-                    <input type="checkbox" checked [(ngModel)]="sliderImagePopup">
+                    <input type="checkbox" [(ngModel)]="sliderImagePopup">
                     <span class="slider round"></span>
                 </label>
             </td>
@@ -106,7 +106,7 @@
             </td>
             <td >
                 <label class="switch">
-                    <input type="checkbox" (change)="onChangeHandler()" [(ngModel)]="sliderAutoSlide">
+                    <input type="checkbox" [disabled]="!sliderInfinite" [(ngModel)]="sliderAutoSlide" (ngModelChange)="onChangeAutoSlide()">
                     <span class="slider round"></span>
                 </label>
                 <small>(Note: Auto Slide will work only if <b>Infinate option</b> is <b>true)</b></small>
@@ -117,7 +117,7 @@
                 <label>Animation Speed option:</label>
             </td>
             <td>
-                <input class="range-slider__range" type="range" [value]="sliderAnimationSpeed" [(ngModel)]="sliderAnimationSpeed" min="0.1" max="5" step=".1" />
+                <input class="range-slider__range" type="range" [(ngModel)]="sliderAnimationSpeed" min="0.1" max="5" step=".1" />
                 <span class="range-slider__value">{{sliderAnimationSpeed}}</span>
             </td>
         </tr>

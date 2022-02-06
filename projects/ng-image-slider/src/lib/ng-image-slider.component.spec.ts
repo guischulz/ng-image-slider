@@ -1,14 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NgImageSliderComponent } from './ng-image-slider.component';
+import { NgImageSliderService } from './ng-image-slider.service';
 
 describe('NgImageSliderComponent', () => {
   let component: NgImageSliderComponent;
   let fixture: ComponentFixture<NgImageSliderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NgImageSliderComponent ]
+      declarations: [ NgImageSliderComponent ],
+      providers: [ NgImageSliderService ],
     })
     .compileComponents();
   }));

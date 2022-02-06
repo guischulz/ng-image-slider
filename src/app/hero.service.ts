@@ -1,15 +1,23 @@
-import { Injectable, Inject, Optional } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
 const httpOptions = {
   headers: new HttpHeaders({ "Content-Type": "application/json" })
 };
 
+export interface Image {
+  image: string,
+  thumbImage: string;
+  title?: string;
+  order?: number | null;
+  alt?: string;
+}
+
 @Injectable()
 export class HeroService {
   constructor(private http: HttpClient) {}
-  
-data:any= 
+
+data: Image[] = 
     [
         {
           "image": "https://i.picsum.photos/id/582/536/354.jpg?hmac=yl_995o4eDi7GMlFYMZcpu_DHFYjuA0g83BuhpHyGiI",
