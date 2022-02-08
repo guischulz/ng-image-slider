@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NgImageSliderComponent } from 'ng-image-slider';
 import { HeroService, Image } from "./hero.service";
 
@@ -8,19 +8,18 @@ import { HeroService, Image } from "./hero.service";
     styleUrls: ['./app.component.css'],
     encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
     @ViewChild('nav') ds: NgImageSliderComponent;
     title = 'Ng Image Slider';
 
-    sliderWidth: Number = 940;
-    sliderImageWidth: Number = 250;
-    sliderImageHeight: Number = 200;
+    sliderWidth: Number = 969;
+    sliderImageWidth: Number = 240;
+    sliderImageHeight: Number = 157;
     sliderArrowShow: Boolean = true;
-    sliderInfinite: Boolean = false;
     sliderImagePopup: Boolean = true;
     sliderAutoSlide: Boolean = false;
     sliderSlideImage: Number = 1;
-    sliderAnimationSpeed: any = 1;
+    sliderAnimationSpeed: any = 0.3;
     imageObject: Image[];
     slideOrderType:string = 'DESC';
 
@@ -28,45 +27,12 @@ export class AppComponent implements AfterViewInit {
         this.setImageObject();
     }
 
-    ngAfterViewInit(): void {
-        this.setImageSize();
-    }
-
-    private setImageSize() {
-        this.ds.imageSize = {
-            'width'  : this.sliderImageWidth,
-            'height' : this.sliderImageHeight
-        }
-        this.ds.setSliderWidth();
-    }
-
     onChangeHandler() {
         this.setImageObject();
     }
-    
-    onChangeImageSize() {
-        this.setImageSize();
-    }
-
-    onChangeInfinite() {
-        if (!this.sliderInfinite && this.sliderAutoSlide) {
-            this.sliderAutoSlide = false;
-            this.ds.imageMouseEnterHandler()
-        }
-    }
-
-    onChangeAutoSlide() {
-        if (this.sliderAutoSlide) {
-            setTimeout(() => {
-                this.ds.imageAutoSlide();
-            });
-        } else {
-            this.ds.imageMouseEnterHandler()
-        }
-    }
 
     setImageObject() {
-        this.imageObject = this.heroService.getImagesWithOrder();
+        this.imageObject = [...this.heroService.getImagesWithOrder()];
     }
 
     imageOnClick(index: number) {

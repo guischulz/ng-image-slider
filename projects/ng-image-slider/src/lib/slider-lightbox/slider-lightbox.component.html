@@ -11,20 +11,14 @@
                     [ngStyle]="{'width': popupWidth + 'px'}"
                     *ngFor="let img of images; let i = index"
                     [attr.id]="'ng-lightbox-image-' + i"
-                    (touchstart)="swipeLightboxImg($event, 'start')"
-                    (touchend)="swipeLightboxImg($event, 'end')"
                     #lightboxImageDiv>
                     <custom-img
-                        [imageUrl]="img?.image || img?.video"
-                        [isVideo]="!!(img?.posterImage || img?.video)"
+                        [imageUrl]="img?.image"
                         [currentImageIndex]="currentImageIndex"
                         [imageIndex]="i"
                         [speed]="speed"
-                        [videoAutoPlay]="videoAutoPlay && i == currentImageIndex"
-                        [showVideoControls]="showVideoControls ? 1 : 0"
-                        [alt]="img?.alt || img?.title || ''"
-                        [title]="img?.title || img?.alt || ''"
-                        [showVideo]="true"
+                        [alt]="img?.alt || img?.title ?? ''"
+                        [title]="img?.title || img?.alt ?? ''"
                         [direction]="direction">
                     </custom-img>
                 </div>
