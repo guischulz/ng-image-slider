@@ -1,11 +1,13 @@
-<div *ngIf="fileUrl" class="custom-image-main" [ngClass]="{'ng-fullimage-loading': imageLoading}">
-    <img class="image"
-        (load)="imageLoading = false"
-        [ngClass]="{'ratio': ratio}"
-        *ngIf="type === IMAGE && fileUrl"
-        [src]="fileUrl"
-        [alt]="alt"
-        [title]="title"
-        [attr.loading]="lazy == true ? 'lazy' : null">
-    <div [dir]="direction" *ngIf="!fileUrl" class="invalid-msg">Invalid file format</div>
+<div *ngIf="fileUrl" class="custom-image-main" [ngClass]="{ 'ng-fullimage-loading': imageLoading }">
+  <img
+    class="image"
+    (load)="imageLoading = false"
+    [ngClass]="{ ratio: ratio }"
+    *ngIf="type === IMAGE && fileUrl"
+    [src]="fileUrl"
+    [alt]="alt"
+    [title]="title"
+    [attr.loading]="lazy == true ? 'lazy' : null"
+  />
+  <div *ngIf="!fileUrl" class="invalid-msg">Invalid file format</div>
 </div>

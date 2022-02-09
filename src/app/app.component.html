@@ -1,112 +1,124 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="bg">
-    <h1 class="text-center demo-title-main">
-        Welcome to {{ title }}!
-    </h1>
-    <div class="margin-auto demo-div box-shadow" [ngStyle]="{'width': sliderWidth + 'px'}">
-        <ng-image-slider #nav
-            [images]="imageObject"
-            [imageSize]="{ 'width': this.sliderImageWidth, 'height': this.sliderImageHeight, 'space': 3 }"
-            [imagePopup]="sliderImagePopup"
-            [showArrow]="sliderArrowShow"
-            [slideImage]="+sliderSlideImage"
-            [animationSpeed]="sliderAnimationSpeed"
-            [manageImageRatio]="false"
-            [paginationShow]="false"
-            [orderType]="slideOrderType"
-            (imageClick)="imageOnClick($event)"
-            (arrowClick)="arrowOnClick($event)"
-            (lightboxClose)="lightboxClose()"
-            (lightboxArrowClick)="lightboxArrowClick($event)"></ng-image-slider>
-    </div>
+  <h1 class="text-center demo-title-main">Welcome to {{ title }}!</h1>
+  <div class="margin-auto demo-div box-shadow" [ngStyle]="{ width: sliderWidth + 'px' }">
+    <ng-image-slider
+      #nav
+      [images]="imageObject"
+      [imageSize]="{ width: this.sliderImageWidth, height: this.sliderImageHeight, spacing: 3 }"
+      [imagePopup]="sliderImagePopup"
+      [showArrow]="sliderArrowShow"
+      [slideStepSize]="sliderImageStepSize"
+      [slideDuration]="sliderTransitionDuration"
+      [manageImageRatio]="false"
+      [paginationShow]="false"
+      [orderType]="slideOrderType"
+      (imageClick)="imageOnClick($event)"
+      (arrowClick)="arrowOnClick($event)"
+      (lightboxClose)="lightboxClose()"
+      (lightboxArrowClick)="lightboxArrowClick($event)"
+    ></ng-image-slider>
+  </div>
 
-    <p class="demo-title-sub margin-auto">PLAY WITH IT!</p>
-    <table class="margin-auto box-shadow">
-        <tr>
-            <td colspan="2">
-                <label>Use Custom Arrow Buttons:</label>
-                <button type="button" (click)="prevImageClick()">Prev</button>
-                <button type="button" (click)="nextImageClick()">Next</button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label class="block title">Responsive Slider:</label>
-                <small>Slider use parent element 100% width. Here we are setting parent element width</small>
-            </td>
-            <td>
-                <span class="input-icon input-icon-right">
-                    <input type="number" [(ngModel)]="sliderWidth"/>
-                    <i>px</i>
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label class="block title">Image Size:</label>
-                <small>Set slider images width and height. Pass object like &#123;width: 400, height: 300&#125;.</small>
-            </td>
-            <td>
-                <div class="size-div">
-                    <span class="input-title">Width</span>
-                    <span class="input-icon input-icon-right">
-                        <input type="number" [(ngModel)]="sliderImageWidth"/>
-                        <i>px</i>
-                    </span>
-                </div>
-                <div class="size-div">
-                    <span class="input-title">Height</span>
-                    <span class="input-icon input-icon-right">
-                        <input type="number" [(ngModel)]="sliderImageHeight"/>
-                        <i>px</i>
-                    </span>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label class="title block">Hide/Show Slider Arrow:</label>
-                <small>Can hide provided arrows buttons and use custom arrow.</small>
-            </td>
-            <td>
-                <label class="switch">
-                    <input type="checkbox" [(ngModel)]="sliderArrowShow">
-                    <span class="slider round"></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Image Popup option:</label>
-            </td>
-            <td>
-                <label class="switch">
-                    <input type="checkbox" [(ngModel)]="sliderImagePopup">
-                    <span class="slider round"></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Animation Speed option:</label>
-            </td>
-            <td>
-                <input class="range-slider__range" type="range" [(ngModel)]="sliderAnimationSpeed" min="0.0" max="2" step=".1" />
-                <span class="range-slider__value">{{sliderAnimationSpeed}}</span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label class="block title">Slide Image at a time:</label>
-                <small>Set how many images will move on left/right arrow click.</small>
-            </td>
-            <td>
-                <select (change)="onChangeHandler()" [(ngModel)]="sliderSlideImage">
-                    <option value="1">1 Image</option>
-                    <option value="2">2 Images</option>
-                    <option value="3">3 Images</option>
-                </select>
-            </td>
-        </tr>
-    </table>
+  <p class="demo-title-sub margin-auto">PLAY WITH IT!</p>
+  <table class="margin-auto box-shadow">
+    <tr>
+      <td colspan="2">
+        <label>Use Custom Arrow Buttons:</label>
+        <button type="button" (click)="prevImageClick()">Prev</button>
+        <button type="button" (click)="nextImageClick()">Next</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="block title">Responsive Slider:</label>
+        <small
+          >Slider use parent element 100% width. Here we are setting parent element width</small
+        >
+      </td>
+      <td>
+        <span class="input-icon input-icon-right">
+          <input type="number" [(ngModel)]="sliderWidth" />
+          <i>px</i>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="block title">Image Size:</label>
+        <small
+          >Set slider images width and height. Pass object like &#123;width: 400, height:
+          300&#125;.</small
+        >
+      </td>
+      <td>
+        <div class="size-div">
+          <span class="input-title">Width</span>
+          <span class="input-icon input-icon-right">
+            <input type="number" [(ngModel)]="sliderImageWidth" />
+            <i>px</i>
+          </span>
+        </div>
+        <div class="size-div">
+          <span class="input-title">Height</span>
+          <span class="input-icon input-icon-right">
+            <input type="number" [(ngModel)]="sliderImageHeight" />
+            <i>px</i>
+          </span>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="title block">Hide/Show Slider Arrow:</label>
+        <small>Can hide provided arrows buttons and use custom arrow.</small>
+      </td>
+      <td>
+        <label class="switch">
+          <input type="checkbox" [(ngModel)]="sliderArrowShow" />
+          <span class="slider round"></span>
+        </label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Image Popup option:</label>
+      </td>
+      <td>
+        <label class="switch">
+          <input type="checkbox" [(ngModel)]="sliderImagePopup" />
+          <span class="slider round"></span>
+        </label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Animation Duration option:</label>
+      </td>
+      <td>
+        <input
+          class="range-slider__range"
+          type="range"
+          [(ngModel)]="sliderTransitionDuration"
+          min="0.0"
+          max="2"
+          step=".1"
+        />
+        <span class="range-slider__value">{{ sliderTransitionDuration }}</span>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="block title">Slide Image at a time:</label>
+        <small>Set how many images will move on left/right arrow click.</small>
+      </td>
+      <td>
+        <select (change)="onChangeHandler()" [(ngModel)]="sliderImageStepSize">
+          <option value="1">1 Image</option>
+          <option value="2">2 Images</option>
+          <option value="3">3 Images</option>
+        </select>
+      </td>
+    </tr>
+  </table>
 </div>

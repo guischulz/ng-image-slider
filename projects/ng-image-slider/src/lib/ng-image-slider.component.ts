@@ -17,7 +17,7 @@ import { NgImageSliderService } from './ng-image-slider.service';
 
 const NEXT_ARROW_CLICK_MESSAGE = 'next';
 const PREV_ARROW_CLICK_MESSAGE = 'previous';
-const MAX_ANIMATION_SPEED = 2;
+const MAX_TRANSITION_DURATION = 2;
 
 export interface Image {
   image: string;
@@ -30,7 +30,7 @@ export interface Image {
 export interface ImageSize {
   width?: number | string;
   height?: number | string;
-  space?: number | string;
+  spacing?: number | string;
 }
 
 @Component({
@@ -48,14 +48,13 @@ export class NgImageSliderComponent implements OnChanges, DoCheck, AfterViewInit
   totalImages: number = 0;
   leftPos: number = 0;
   transitionEffect: string = 'none';
-  speed: number = 1; // default speed in second
+  transitionDuration: number = 1; // default duration in seconds
   sliderPrevDisabled: boolean = false;
   sliderNextDisabled: boolean = false;
-  slideNumberOfImages: number = 1;
+  stepSize: number = 1;
   sliderImageWidth: number;
   sliderImageHeight: number;
   showArrowButton: boolean = true;
-  textDirection: string = 'ltr';
   imageMargin: number = 0;
   sliderOrderType: string = 'ASC';
 
@@ -70,7 +69,7 @@ export class NgImageSliderComponent implements OnChanges, DoCheck, AfterViewInit
   // @inputs
   @Input()
   set imageSize(data: ImageSize) {
-    const margin = data?.space ?? '';
+    const margin = data?.spacing ?? '';
     if (margin !== '') {
       this.imageMargin = Number(margin);
     }
@@ -80,28 +79,21 @@ export class NgImageSliderComponent implements OnChanges, DoCheck, AfterViewInit
   }
   @Input() imagePopup: boolean = true;
   @Input()
-  set direction(dir: string) {
-    if (dir) {
-      this.textDirection = dir;
-    }
-  }
-  @Input()
-  set animationSpeed(speed: number) {
-    if (speed && speed <= MAX_ANIMATION_SPEED) {
-      this.speed = speed;
+  set slideDuration(duration: number) {
+    if (duration && duration <= MAX_TRANSITION_DURATION) {
+      this.transitionDuration = duration;
       this.transitionEffect = this.getTransitionEffect();
     }
   }
   @Input() images: Array<object> = [];
-  @Input() set slideImage(val: number) {
+  @Input() set slideStepSize(val: number) {
     if (val) {
-      this.slideNumberOfImages = Math.round(val);
+      this.stepSize = Math.round(val);
     }
   }
   @Input() set showArrow(flag: boolean) {
     this.showArrowButton = flag === true;
   }
-
   @Input() set orderType(data: string) {
     if (data) {
       this.sliderOrderType = data.toUpperCase();
@@ -167,9 +159,9 @@ export class NgImageSliderComponent implements OnChanges, DoCheck, AfterViewInit
   }
 
   private getTransitionEffect() {
-    const speed = this.speed ?? 0;
-    const easing = speed >= 0.3 ? 'ease-in-out' : 'linear';
-    return `all ${speed}s ${easing}`;
+    const duration = this.transitionDuration ?? 0;
+    const easing = duration >= 0.3 ? 'ease-in-out' : 'linear';
+    return `all ${duration}s ${easing}`;
   }
 
   private parseCssUnitString(size: number | string, base?: number) {
@@ -242,7 +234,7 @@ export class NgImageSliderComponent implements OnChanges, DoCheck, AfterViewInit
     if (!this.sliderPrevDisabled) {
       this.prevImg();
 
-      this.disableSliderNavigation(PREV_ARROW_CLICK_MESSAGE, this.speed);
+      this.disableSliderNavigation(PREV_ARROW_CLICK_MESSAGE, this.transitionDuration);
       this.refreshVisibleIndex();
     }
   }
@@ -251,7 +243,7 @@ export class NgImageSliderComponent implements OnChanges, DoCheck, AfterViewInit
     if (!this.sliderNextDisabled) {
       this.nextImg();
 
-      this.disableSliderNavigation(NEXT_ARROW_CLICK_MESSAGE, this.speed);
+      this.disableSliderNavigation(NEXT_ARROW_CLICK_MESSAGE, this.transitionDuration);
       this.refreshVisibleIndex();
     }
   }
@@ -289,7 +281,7 @@ export class NgImageSliderComponent implements OnChanges, DoCheck, AfterViewInit
 
   getSliderShiftWidth() {
     const imageElementWidth = this.sliderImageWidth + this.imageMargin * 2;
-    return imageElementWidth * this.slideNumberOfImages;
+    return imageElementWidth * this.stepSize;
   }
 
   /**

@@ -1,12 +1,11 @@
-import { DOCUMENT } from '@angular/common';
 import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    HostListener,
-    Inject,
-    Input, Output,
-    ViewChild
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  ViewChild
 } from '@angular/core';
 
 const LIGHTBOX_NEXT_ARROW_CLICK_MESSAGE = 'lightbox next';
@@ -18,6 +17,7 @@ const LIGHTBOX_PREV_ARROW_CLICK_MESSAGE = 'lightbox previous';
 })
 export class SliderLightboxComponent {
   totalImages: number = 0;
+  currentImageIndex: number = 0;
   nextImageIndex: number = -1;
   popupWidth: number = 1200;
   marginLeft: number = 0;
@@ -26,9 +26,7 @@ export class SliderLightboxComponent {
   lightboxNextDisable: boolean = false;
   showLoading: boolean = true;
   transitionEffect: string = 'none';
-  speed: number = 1; // default speed in second
   title: string = '';
-  currentImageIndex: number = 0;
 
   @ViewChild('lightboxDiv') lightboxDiv: ElementRef;
   @ViewChild('lightboxImageDiv') lightboxImageDiv: ElementRef;
@@ -50,12 +48,8 @@ export class SliderLightboxComponent {
       this.setPopupSliderWidth();
     }
   }
-  @Input() direction: string = 'ltr';
   @Input() paginationShow: boolean = false;
-  @Input()
-  set animationSpeed(data: number) {
-    this.speed = data;
-  }
+  @Input() transitionDuration: number = 1; // default duration in seconds
   @Input() arrowKeyMove: boolean = true;
 
   // @Output
@@ -74,18 +68,16 @@ export class SliderLightboxComponent {
       if (event.key.toLowerCase() === 'arrowright') {
         this.nextImageLightbox();
       }
-
       if (event.key.toLowerCase() === 'arrowleft') {
         this.prevImageLightbox();
       }
-
       if (event.key.toLowerCase() === 'escape') {
         this.closeLightbox();
       }
     }
   }
 
-  constructor(private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {}
+  constructor(private elRef: ElementRef) {}
 
   setPopupSliderWidth() {
     if (window && window.innerWidth) {
@@ -106,24 +98,24 @@ export class SliderLightboxComponent {
   }
 
   prevImageLightbox() {
-    this.transitionEffect = `all ${this.speed}s ease-in-out`;
+    this.transitionEffect = `all ${this.transitionDuration}s ease-in-out`;
     if (this.currentImageIndex > 0 && !this.lightboxPrevDisable) {
       this.currentImageIndex--;
       this.prevImage.emit(LIGHTBOX_PREV_ARROW_CLICK_MESSAGE);
       this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
       this.getImageData();
-      this.disableNavigation(this.speed);
+      this.disableNavigation(this.transitionDuration);
     }
   }
 
   nextImageLightbox() {
-    this.transitionEffect = `all ${this.speed}s ease-in-out`;
+    this.transitionEffect = `all ${this.transitionDuration}s ease-in-out`;
     if (this.currentImageIndex < this.images.length - 1 && !this.lightboxNextDisable) {
       this.currentImageIndex++;
       this.nextImage.emit(LIGHTBOX_NEXT_ARROW_CLICK_MESSAGE);
       this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
       this.getImageData();
-      this.disableNavigation(this.speed);
+      this.disableNavigation(this.transitionDuration);
     }
   }
 

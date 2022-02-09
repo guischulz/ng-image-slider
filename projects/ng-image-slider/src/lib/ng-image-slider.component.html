@@ -27,12 +27,11 @@
             [imageUrl]="img?.thumbImage || img?.posterImage"
             [alt]="img?.alt || img?.title ?? ''"
             [title]="img?.title || img?.alt ?? ''"
-            [direction]="textDirection"
             [ratio]="manageImageRatio"
             [lazy]="lazyLoading"
           >
           </custom-img>
-          <div [dir]="textDirection" class="caption" *ngIf="img?.title">{{ img?.title }}</div>
+          <div class="caption" *ngIf="img?.title">{{ img?.title }}</div>
         </div>
       </div>
       <div class="ng-image-slider-error" *ngIf="!imageData.length">
@@ -63,10 +62,9 @@
     [paginationShow]="paginationShow"
     [arrowKeyMove]="arrowKeyMove"
     [images]="lightboxImages"
-    [animationSpeed]="speed"
+    [transitionDuration]="transitionDuration"
     [imageIndex]="activeImageIndex"
     [show]="lightboxShow"
-    [direction]="textDirection"
     (prevImage)="lightboxArrowClickHandler($event)"
     (nextImage)="lightboxArrowClickHandler($event)"
     (close)="close()"
