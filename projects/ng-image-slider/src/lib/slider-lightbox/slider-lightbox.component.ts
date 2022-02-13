@@ -4,150 +4,79 @@ import {
   EventEmitter,
   HostListener,
   Input,
-  Output,
-  ViewChild
+  OnChanges,
+  Output, ViewChild
 } from '@angular/core';
-
-const LIGHTBOX_NEXT_ARROW_CLICK_MESSAGE = 'lightbox next';
-const LIGHTBOX_PREV_ARROW_CLICK_MESSAGE = 'lightbox previous';
+import { Image } from '../model/image.model';
+import { SliderBaseComponent } from '../slider-base.component';
 
 @Component({
   selector: 'slider-lightbox',
   templateUrl: './slider-lightbox.component.html'
 })
-export class SliderLightboxComponent {
-  totalImages: number = 0;
-  currentImageIndex: number = 0;
-  nextImageIndex: number = -1;
-  popupWidth: number = 1200;
-  marginLeft: number = 0;
-  imageFullscreenView: boolean = false;
-  lightboxPrevDisable: boolean = false;
-  lightboxNextDisable: boolean = false;
-  showLoading: boolean = true;
-  transitionEffect: string = 'none';
+export class SliderLightboxComponent extends SliderBaseComponent implements OnChanges {
+  // for lightbox
+  isLightboxActive: boolean = false;
   title: string = '';
 
   @ViewChild('lightboxDiv') lightboxDiv: ElementRef;
   @ViewChild('lightboxImageDiv') lightboxImageDiv: ElementRef;
 
   // @Inputs
-  @Input() images: Array<object> = [];
   @Input()
-  set imageIndex(index: number) {
-    if (index && index > -1 && index < this.images.length) {
-      this.currentImageIndex = index;
+  set show(enabled: boolean) {
+    this.isLightboxActive = enabled;
+    if (enabled === true) {
+      this.elementRef.nativeElement.ownerDocument.body.style.overflow = 'hidden';
+      this.updateSliderWidth();
+    } else {
+      this.elementRef.nativeElement.ownerDocument.body.style.overflow = '';
     }
   }
-  @Input()
-  set show(visibleFlag: boolean) {
-    this.imageFullscreenView = visibleFlag;
-    this.elRef.nativeElement.ownerDocument.body.style.overflow = '';
-    if (visibleFlag === true) {
-      this.elRef.nativeElement.ownerDocument.body.style.overflow = 'hidden';
-      this.setPopupSliderWidth();
-    }
-  }
-  @Input() paginationShow: boolean = false;
-  @Input() transitionDuration: number = 1; // default duration in seconds
-  @Input() arrowKeyMove: boolean = true;
+  @Input() showPagination: boolean = false;
 
   // @Output
   @Output() close = new EventEmitter<any>();
-  @Output() prevImage = new EventEmitter<any>();
-  @Output() nextImage = new EventEmitter<any>();
 
-  @HostListener('window:resize', ['$event'])
-  onResize(_event: Event) {
-    this.transitionEffect = 'none';
-    this.setPopupSliderWidth();
-  }
   @HostListener('document:keyup', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event && event.key && this.arrowKeyMove) {
-      if (event.key.toLowerCase() === 'arrowright') {
-        this.nextImageLightbox();
-      }
-      if (event.key.toLowerCase() === 'arrowleft') {
-        this.prevImageLightbox();
-      }
-      if (event.key.toLowerCase() === 'escape') {
+    switch (event?.key) {
+      case 'arrowright':
+        this.nextImage();
+        break;
+      case 'arrowleft':
+        this.prevImage();
+        break;
+      case 'escape':
         this.closeLightbox();
-      }
+        break;
     }
   }
 
-  constructor(private elRef: ElementRef) {}
+  constructor(private elementRef: ElementRef) {
+    super();
+  }
 
-  setPopupSliderWidth() {
+  updateImages(images: Image[]) {
+    super.updateImages(images);
+
+    if (this.images.length > 0) {
+      this.gotoImage(this.selectedIndex ?? 0);
+    }
+  }
+
+  setActiveImage(index: number, _btn?: boolean): void {
+    this.title = this.images[this.selectedIndex]['title'] ?? '';
+    super.setActiveImage(index, false);
+  }
+
+  updateSliderWidth() {
     if (window && window.innerWidth) {
-      this.popupWidth = window.innerWidth;
-      this.totalImages = this.images.length;
-
-      this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
-      this.getImageData();
-      this.disableNavigation(0.2); // FIXME: do not use fixed timeout value
-      setTimeout(() => {
-        this.showLoading = false;
-      }, 200);
+      super.updateSliderWidth();
     }
   }
 
   closeLightbox() {
     this.close.emit();
-  }
-
-  prevImageLightbox() {
-    this.transitionEffect = `all ${this.transitionDuration}s ease-in-out`;
-    if (this.currentImageIndex > 0 && !this.lightboxPrevDisable) {
-      this.currentImageIndex--;
-      this.prevImage.emit(LIGHTBOX_PREV_ARROW_CLICK_MESSAGE);
-      this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
-      this.getImageData();
-      this.disableNavigation(this.transitionDuration);
-    }
-  }
-
-  nextImageLightbox() {
-    this.transitionEffect = `all ${this.transitionDuration}s ease-in-out`;
-    if (this.currentImageIndex < this.images.length - 1 && !this.lightboxNextDisable) {
-      this.currentImageIndex++;
-      this.nextImage.emit(LIGHTBOX_NEXT_ARROW_CLICK_MESSAGE);
-      this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
-      this.getImageData();
-      this.disableNavigation(this.transitionDuration);
-    }
-  }
-
-  disableNavigation(seconds?: number) {
-    this.lightboxNextDisable = true;
-    this.lightboxPrevDisable = true;
-    if (seconds) {
-      setTimeout(() => {
-        this.manageNavigationButtons();
-      }, seconds * 1000);
-    }
-  }
-
-  manageNavigationButtons() {
-    this.lightboxNextDisable = false;
-    this.lightboxPrevDisable = false;
-    if (this.currentImageIndex >= this.images.length - 1) {
-      this.lightboxNextDisable = true;
-    }
-    if (this.currentImageIndex <= 0) {
-      this.lightboxPrevDisable = true;
-    }
-  }
-
-  getImageData() {
-    if (
-      this.images?.length &&
-      this.images[this.currentImageIndex] &&
-      this.images[this.currentImageIndex]['image']
-    ) {
-      this.title = this.images[this.currentImageIndex]['title'] ?? '';
-      this.totalImages = this.images.length;
-    }
   }
 }

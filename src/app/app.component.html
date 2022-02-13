@@ -1,18 +1,34 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="bg">
   <h1 class="text-center demo-title-main">Welcome to {{ title }}!</h1>
+
+  <div class="margin-auto demo-div box-shadow" [ngStyle]="{ width: 260 + 'px' }">
+    <ng-image-slider
+      #pic
+      [images]="imageObject"
+      [imageSize]="{ width: 240, height: 240 }"
+      [imagePopup]="sliderImagePopup"
+      [showArrow]="true"
+      [transitionDuration]="0.3"
+      [manageImageRatio]="true"
+      [showPagination]="true"
+      [(selectedImage)]="imageIndex"
+    >
+    </ng-image-slider>
+  </div>
+
   <div class="margin-auto demo-div box-shadow" [ngStyle]="{ width: sliderWidth + 'px' }">
     <ng-image-slider
       #nav
       [images]="imageObject"
-      [imageSize]="{ width: this.sliderImageWidth, height: this.sliderImageHeight, spacing: 3 }"
-      [imagePopup]="sliderImagePopup"
+      [imageSize]="{ width: sliderImageWidth, height: sliderImageHeight, spacing: 3 }"
+      [imagePopup]="false"
       [showArrow]="sliderArrowShow"
       [slideStepSize]="sliderImageStepSize"
-      [slideDuration]="sliderTransitionDuration"
+      [transitionDuration]="sliderTransitionDuration"
       [manageImageRatio]="false"
-      [paginationShow]="false"
-      [orderType]="slideOrderType"
+      [showPagination]="false"
+      [(selectedImage)]="imageIndex"
       (imageClick)="imageOnClick($event)"
       (arrowClick)="arrowOnClick($event)"
       (lightboxClose)="lightboxClose()"
@@ -38,7 +54,7 @@
       </td>
       <td>
         <span class="input-icon input-icon-right">
-          <input type="number" [(ngModel)]="sliderWidth" />
+          <input type="number" (change)="onChangeHandler()" [(ngModel)]="sliderWidth" />
           <i>px</i>
         </span>
       </td>
@@ -117,6 +133,7 @@
           <option value="1">1 Image</option>
           <option value="2">2 Images</option>
           <option value="3">3 Images</option>
+          <option value="4">4 Images</option>
         </select>
       </td>
     </tr>

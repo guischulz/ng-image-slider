@@ -19,7 +19,6 @@ export class SliderCustomImageComponent implements OnChanges {
   @Input() alt: String = '';
   @Input() title: String = '';
   @Input() ratio: boolean = false;
-  @Input() lazy: boolean = false;
 
   constructor(public imageSliderService: NgImageSliderService, private sanitizer: DomSanitizer) {}
 

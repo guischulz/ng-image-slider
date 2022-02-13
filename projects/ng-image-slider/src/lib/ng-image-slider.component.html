@@ -1,73 +1,77 @@
-<div class="ng-image-slider" [ngStyle]="{ height: sliderImageHeight + 'px' }">
+<div class="ng-image-slider" [ngStyle]="{ height: imageHeight + 'px' }">
   <div class="ng-image-slider-container">
-    <div #sliderMain class="main" [ngStyle]="{ height: sliderImageHeight + 'px' }">
+    <div #sliderMain class="main" [ngStyle]="{ height: imageHeight + 'px' }">
       <div
         class="main-inner"
-        *ngIf="imageData.length"
-        [ngClass]="{ 'with-ng-main-pagination': paginationShow }"
+        *ngIf="totalImages"
+        [ngClass]="{ 'with-ng-main-pagination': showPagination }"
         [ngStyle]="{
-          'margin-left': leftPos + 'px',
+          'margin-left': marginLeft + 'px',
           width: imageParentDivWidth + 'px',
           transition: transitionEffect
         }"
+        swipe
+        (next)="nextImage()"
+        (previous)="prevImage()"
       >
         <div
           #imageDiv
-          *ngFor="let img of imageData; let i = index"
-          [ngClass]="{ 'image-popup': imagePopup, 'selected-image': activeImageIndex == i }"
+          *ngFor="let img of images; let i = index"
+          [ngClass]="{ 'image-popup': imagePopup, 'selected-image': selectedIndex == i }"
           [ngStyle]="{
-            width: sliderImageWidth + 'px',
+            width: imageWidth + 'px',
             'margin-left': imageMargin + 'px',
             'margin-right': imageMargin + 'px'
           }"
           class="img-div"
-          (click)="imageOnClick(img.index)"
+          (click)="onImageClick(img.index)"
+          (deferLoad)="img.showThumb = true"
         >
           <custom-img
-            [imageUrl]="img?.thumbImage || img?.posterImage"
-            [alt]="img?.alt || img?.title ?? ''"
-            [title]="img?.title || img?.alt ?? ''"
+            *ngIf="img.showThumb"
+            [imageUrl]="img?.thumbImage ?? img?.image"
+            [alt]="img?.alt || (img?.title ?? '')"
+            [title]="img?.title || (img?.alt ?? '')"
             [ratio]="manageImageRatio"
-            [lazy]="lazyLoading"
+            swipe
           >
           </custom-img>
           <div class="caption" *ngIf="img?.title">{{ img?.title }}</div>
         </div>
       </div>
-      <div class="ng-image-slider-error" *ngIf="!imageData.length">
+      <div class="ng-image-slider-error" *ngIf="!totalImages">
         <span class="ng-image-slider-loader"></span>
       </div>
-      <a
-        *ngIf="showArrowButton && imageData.length > 1"
-        [ngClass]="{ disable: sliderPrevDisabled }"
-        class="prev icons prev-icon"
-        (click)="prev()"
-        >&lsaquo;</a
+
+      <div
+        *ngIf="showArrowButtons && totalImages > 1"
+        [ngClass]="{ disable: buttonPrevDisabled }"
+        class="prev"
+        (click)="prevImage()"
       >
-      <a
-        *ngIf="showArrowButton && imageData.length > 1"
-        [ngClass]="{ disable: sliderNextDisabled }"
-        class="next icons next-icon"
-        (click)="next()"
-        >&rsaquo;</a
+        <chevron-icon></chevron-icon>
+      </div>
+      <div
+        *ngIf="showArrowButtons && totalImages > 1"
+        [ngClass]="{ disable: buttonNextDisabled }"
+        class="next"
+        (click)="nextImage()"
       >
+        <chevron-icon></chevron-icon>
+      </div>
     </div>
-    <div *ngIf="imageData.length && paginationShow" class="ng-main-pagination">
-      {{ visibleImageIndex + 1 }} of {{ totalImages }}
+    <div *ngIf="totalImages && showPagination" class="ng-main-pagination">
+      {{ selectedIndex + 1 }} of {{ totalImages }}
     </div>
   </div>
 </div>
-<div *ngIf="lightboxShow">
-  <slider-lightbox
-    [paginationShow]="paginationShow"
-    [arrowKeyMove]="arrowKeyMove"
-    [images]="lightboxImages"
-    [transitionDuration]="transitionDuration"
-    [imageIndex]="activeImageIndex"
-    [show]="lightboxShow"
-    (prevImage)="lightboxArrowClickHandler($event)"
-    (nextImage)="lightboxArrowClickHandler($event)"
-    (close)="close()"
-  >
-  </slider-lightbox>
-</div>
+<slider-lightbox
+  *ngIf="isLightboxActive"
+  [showPagination]="showPagination"
+  [images]="images"
+  [transitionDuration]="transitionDuration"
+  [(selectedImage)]="selectedImage"
+  [show]="isLightboxActive"
+  (close)="closeLightbox()"
+>
+</slider-lightbox>

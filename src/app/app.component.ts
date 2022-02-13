@@ -9,19 +9,20 @@ import { HeroService, Image } from './hero.service';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  @ViewChild('nav') ds: NgImageSliderComponent;
+  @ViewChild('nav') nav: NgImageSliderComponent;
+  @ViewChild('pic') pic: NgImageSliderComponent;
   title = 'Ng Image Slider';
 
-  sliderWidth: Number = 969;
-  sliderImageWidth: Number = 240;
-  sliderImageHeight: Number = 157;
+  sliderWidth: Number = 950;
+  sliderImageWidth: Number = 180;
+  sliderImageHeight: Number = 120;
   sliderArrowShow: Boolean = true;
   sliderImagePopup: Boolean = true;
   sliderAutoSlide: Boolean = false;
   sliderImageStepSize: Number = 1;
   sliderTransitionDuration: any = 0.3;
   imageObject: Image[];
-  slideOrderType: string = 'DESC';
+  imageIndex = 5;
 
   constructor(private heroService: HeroService) {
     this.setImageObject();
@@ -29,10 +30,11 @@ export class AppComponent {
 
   onChangeHandler() {
     this.setImageObject();
+    this.nav.updateSliderWidth();
   }
 
   setImageObject() {
-    this.imageObject = [...this.heroService.getImagesWithOrder()];
+    this.imageObject = [...this.heroService.getImages()];
   }
 
   imageOnClick(index: number) {
@@ -43,7 +45,7 @@ export class AppComponent {
     console.log('lightbox close');
   }
 
-  arrowOnClick(event: Event) {
+  arrowOnClick(event: string) {
     console.log('arrow click event', event);
   }
 
@@ -52,10 +54,10 @@ export class AppComponent {
   }
 
   prevImageClick() {
-    this.ds.prev();
+    this.nav.prevImage();
   }
 
   nextImageClick() {
-    this.ds.next();
+    this.nav.nextImage();
   }
 }

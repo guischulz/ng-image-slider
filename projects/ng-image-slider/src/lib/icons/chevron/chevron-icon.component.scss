@@ -1,0 +1,11 @@
+svg {
+  $svg-dimension: 26px;
+  width: $svg-dimension;
+  height: $svg-dimension;
+}
+
+svg {
+  fill: white;
+  filter: drop-shadow(0 0 1px black);
+  display: block;
+}
